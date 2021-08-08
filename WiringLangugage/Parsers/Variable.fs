@@ -1,8 +1,8 @@
-module WiringLangugage.Variable
+module WiringLangugage.Parsers.Variable
 
-open WiringLangugage.Identifier
 open FParsec
 open FParsec.Pipes
+open WiringLangugage.Parsers.Identifier
 
 [<Struct>]
 type Variable =

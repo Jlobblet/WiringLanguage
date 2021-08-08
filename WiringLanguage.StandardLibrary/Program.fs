@@ -126,7 +126,7 @@ let extractComponents assembly english (xElement: XElement) =
 let generateComponentDefinition ``component`` =
     seq {
         let identifier = ``component``.Identifier
-        
+
         let name =
             ``component``
                 .Name
@@ -181,7 +181,10 @@ let main argv =
                     |> Seq.map
                         (fun c ->
                             { c with
-                                  Name = $"%s{c.Name}_%s{c.Identifier}" }))
+                                  Name =
+                                      match c.Name.Equals(c.Identifier, StringComparison.OrdinalIgnoreCase) with
+                                      | true -> c.Name
+                                      | false -> $"%s{c.Name}_%s{c.Identifier}" }))
         |> Seq.map generateComponentDefinition
         |> String.concat "\n\n"
 

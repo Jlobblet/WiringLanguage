@@ -1,8 +1,8 @@
-module WiringLangugage.Component
+module WiringLangugage.Parsers.Component
 
-open WiringLangugage.Identifier
 open FParsec
 open FParsec.Pipes
+open WiringLangugage.Parsers.Identifier
 
 [<Struct>]
 type ComponentField =
@@ -11,15 +11,16 @@ type ComponentField =
     | Value of value: Identifier
     static member DefaultParser: Parser<_, unit> =
         %%spaces
-        ?- +. [stringReturn "input" Input; stringReturn "output" Output]
+        -- +. [stringReturn "input" Input; stringReturn "output" Output; stringReturn "value" Value]
         -- spaces1
         -- +. p<Identifier>
         -- spaces
-        -? ';'
+        -- ';'
         -|> id
 
 type Component =
     { Name: Identifier
+      Identifier: Identifier
       Inputs: Set<Identifier>
       Outputs: Set<Identifier>
       Values: Set<Identifier> }
@@ -27,13 +28,17 @@ type Component =
         %% spaces
         -- "component"
         -- spaces1
-        -- +. %p<Identifier>
+        -- +. p<Identifier>
+        -- spaces
+        -- ':'
+        -- spaces
+        -- +. p<Identifier>
         -- spaces
         -- '{'
-        -- +.(%p<ComponentField> * qty.[0..])
+        -- +.((attempt %p<ComponentField>) * qty.[0..])
         -- spaces
         -- '}'
-        -|> fun name fields ->
+        -|> fun name identifier fields ->
                 let fields = Array.ofSeq fields
                 let inputs =
                     fields
@@ -60,6 +65,7 @@ type Component =
                     |> Set.ofArray
 
                 { Name = name
+                  Identifier = identifier
                   Inputs = inputs
                   Outputs = outputs
                   Values = values }

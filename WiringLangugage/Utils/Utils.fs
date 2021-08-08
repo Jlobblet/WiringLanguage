@@ -16,6 +16,10 @@ module Result =
     let ofOptionWith errThunk = function
         | Some v -> Result.Ok v
         | None -> Result.Error <| errThunk()
+        
+    let ofParseResult = function
+        | ParserResult.Success (r, u, p) -> Result.Ok r
+        | ParserResult.Failure (e, u, p) -> Result.Error e
 
 [<RequireQualifiedAccess>]
 module Map =

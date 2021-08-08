@@ -2,19 +2,22 @@ module WiringLangugage.Instruction
 
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Variable
-open WiringLangugage.Component
-open WiringLangugage.Connection
+open WiringLangugage.Parsers.Import
+open WiringLangugage.Parsers.Variable
+open WiringLangugage.Parsers.Component
+open WiringLangugage.Parsers.Connection
 
 type Instruction =
-    | Variables of variables: Variable []
-    | ComponentDefinition of ``component``: Component
-    | ConnectionDefinition of connection: Connection
+    | Import of Import
+    | ComponentDefinition of Component
+    | Variables of Variable []
+    | ConnectionDefinition of Connection
     static member DefaultParser: Parser<Instruction, unit> =
         %% spaces
-        -- +.([ Variable.DefaultParser |>> Variables
+        -- +.([ Import.DefaultParser |>> Import
                 Component.DefaultParser |>> ComponentDefinition
+                Variable.DefaultParser |>> Variables
                 Connection.DefaultParser |>> ConnectionDefinition ]
-              |> List.map attempt)
+                |> List.map attempt)
         -- spaces
         -|> id

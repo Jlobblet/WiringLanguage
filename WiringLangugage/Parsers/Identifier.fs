@@ -1,4 +1,4 @@
-module WiringLangugage.Identifier
+module WiringLangugage.Parsers.Identifier
 
 open FParsec
 
@@ -6,4 +6,4 @@ open FParsec
 type Identifier =
     | Identifier of string
     static member DefaultParser: Parser<_, unit> =
-        regex @"[_a-zA-Z][_a-zA-Z0-9]*" |>> Identifier
+        regexL @"[_a-zA-Z][_a-zA-Z0-9%]*" "Identifier" |>> Identifier

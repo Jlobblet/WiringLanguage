@@ -1,8 +1,8 @@
-module WiringLangugage.Connection
+module WiringLangugage.Parsers.Connection
 
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Identifier
+open WiringLangugage.Parsers.Identifier
 
 [<Struct>]
 type ConnectionPin =

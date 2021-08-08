@@ -1,12 +1,13 @@
 module WiringLangugage.Scope
 
+open System.Diagnostics
 open FSharpPlus
 open FSharpPlus.Lens
-open WiringLangugage.Component
-open WiringLangugage.Connection
-open WiringLangugage.Identifier
 open WiringLangugage.Utils
-open WiringLangugage.Variable
+open WiringLangugage.Parsers.Component
+open WiringLangugage.Parsers.Connection
+open WiringLangugage.Parsers.Identifier
+open WiringLangugage.Parsers.Variable
 
 type Instance =
     { Component: Component
@@ -103,6 +104,10 @@ module Scope =
     let empty =
         { Components = Map.empty
           Instances = Map.empty }
+
+    let union this other =
+        { Components = Map.union other.Components this.Components
+          Instances = Map.union other.Instances this.Instances }
 
     let tryFindInstance name scope =
         Map.tryFind name scope.Instances
