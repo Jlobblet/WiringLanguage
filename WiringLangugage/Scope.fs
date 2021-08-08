@@ -1,8 +1,6 @@
 module WiringLangugage.Scope
 
-open System.Diagnostics
 open FSharpPlus
-open FSharpPlus.Lens
 open WiringLangugage.Utils
 open WiringLangugage.Parsers.Component
 open WiringLangugage.Parsers.Connection
@@ -79,21 +77,6 @@ module Instance =
 
             { instance with Values = newValues }
         }
-//    let inline _inputs func instance =
-//        func instance.Inputs <&> fun x -> { instance with Inputs = x }
-//
-//    let inline _input func name instance =
-//        func (instance ^. _inputs).[name] <&> fun x -> { instance with Inputs = Map.add name x (instance ^. _inputs) }
-//
-//    let inline addInput name connection = over _input (Set.add connection)
-//
-//    let inline _outputs func instance =
-//        func instance.Outputs <&> fun x -> { instance with Outputs = x }
-//
-//    let inline _values func instance =
-//        func instance.Values <&> fun x -> { instance with Values = x }
-//
-//    let setValue identifier value = over _values (Map.add identifier value)
 
 type Scope =
     { Components: Map<Identifier, Component>
@@ -148,22 +131,3 @@ module Scope =
 
             { scope with Instances = newInstances }
         }
-
-//    let inline _components func scope =
-//        func scope.Components <&> fun x -> { scope with Components = x }
-//
-//    let addComponent comp = over _components (Set.add comp)
-//
-//    let inline _instances func scope =
-//        func scope.Instances <&> fun x -> { scope with Instances = x }
-//
-//    let addInstance name instance = over _instances (Map.add name instance)
-//
-//    let inline _instance func name scope =
-//        func (scope ^. _instances).[name] <&> fun x -> { scope with Instances = Map.add name x (scope ^. _instances) }
-//
-//    let inline _instanceInputs func = _instance << Instance._inputs <| func
-//
-//    let inline _instanceOutputs func = _instance << Instance._outputs <| func
-//
-//    let inline _instanceValues func = _instance << Instance._values <| func
