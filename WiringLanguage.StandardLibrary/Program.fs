@@ -1,11 +1,11 @@
 // Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
 
 open System
-open System.Reflection
-open FSharpPlus
-open FSharp.XExtensions
 open System.IO
+open System.Reflection
 open System.Xml.Linq
+open FSharp.XExtensions
+open FSharpPlus
 open FSharpPlus.Data
 open WiringLanguage.StandardLibrary.Settings
 
@@ -136,7 +136,7 @@ let generateComponentDefinition ``component`` =
             |> Array.ofSeq
             |> String
 
-        yield $"component %s{identifier}"
+        yield $"component %s{identifier} {{"
 
         let makeField name ns =
             Array.map (fun n -> $"    %s{name} %s{n};") ns

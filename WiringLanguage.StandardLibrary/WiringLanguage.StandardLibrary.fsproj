@@ -7,17 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Settings.fs" />
-        <Compile Include="Program.fs" />
+        <Compile Include="Settings.fs"/>
+        <Compile Include="Program.fs"/>
         <Content Include="app.config">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Argu" Version="6.1.1" />
-      <PackageReference Include="FSharp.XExtensions" Version="1.2.0" />
-      <PackageReference Include="FSharpPlus" Version="1.2.1" />
+        <PackageReference Include="Argu" Version="6.1.1"/>
+        <PackageReference Include="FSharp.XExtensions" Version="1.2.0"/>
+        <PackageReference Include="FSharpPlus" Version="1.2.1"/>
     </ItemGroup>
 
 </Project>
