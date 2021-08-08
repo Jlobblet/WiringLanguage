@@ -93,6 +93,7 @@ let extractComponents assembly english (xElement: XElement) =
         monad.plus {
             // Get the identifier of the item
             let! identifier = tryGetAttributeValue "identifier" xElement
+
             let name =
                 tryGetName english xElement
                 |> Option.defaultValue identifier
@@ -124,7 +125,9 @@ let extractComponents assembly english (xElement: XElement) =
 
 let generateComponentDefinition ``component`` =
     seq {
-        let identifier =
+        let identifier = ``component``.Identifier
+        
+        let name =
             ``component``
                 .Name
                 .Replace("component", "", StringComparison.OrdinalIgnoreCase)
@@ -136,7 +139,7 @@ let generateComponentDefinition ``component`` =
             |> Array.ofSeq
             |> String
 
-        yield $"component %s{identifier} {{"
+        yield $"component %s{name} : %s{identifier} {{"
 
         let makeField name ns =
             Array.map (fun n -> $"    %s{name} %s{n};") ns
@@ -169,10 +172,16 @@ let main argv =
         |> Seq.collect id
         |> Seq.choose (extractComponents assembly english)
         |> Seq.groupBy (fun c -> c.Name)
-        |> Seq.collect (fun (_, cs) ->
-            match Seq.length cs with
-            | 1 ->cs
-            | _ -> cs |> Seq.map (fun c -> { c with Name = $"%s{c.Name}_%s{c.Identifier}" }))
+        |> Seq.collect
+            (fun (_, cs) ->
+                match Seq.length cs with
+                | 1 -> cs
+                | _ ->
+                    cs
+                    |> Seq.map
+                        (fun c ->
+                            { c with
+                                  Name = $"%s{c.Name}_%s{c.Identifier}" }))
         |> Seq.map generateComponentDefinition
         |> String.concat "\n\n"
 
