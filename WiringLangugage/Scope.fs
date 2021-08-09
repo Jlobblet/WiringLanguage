@@ -7,11 +7,27 @@ open WiringLangugage.Parsers.Connection
 open WiringLangugage.Parsers.Identifier
 open WiringLangugage.Parsers.Variable
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Instance =
     { Component: Component
       Inputs: Map<Identifier, Set<ConnectionPin>>
       Outputs: Map<Identifier, Set<ConnectionPin>>
       Values: Map<Identifier, string> }
+    member this.StructuredFormatDisplay =
+        $"""Instance
+{{ Component = %s{this.Component.Identifier.Value}
+   Inputs = %A{this.Inputs
+               |> Map.filter (fun _ -> not << Set.isEmpty)
+               |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} <- %A{kvp.Value}")
+               |> List.ofSeq}
+   Outputs = %A{this.Outputs
+                |> Map.filter (fun _ -> not << Set.isEmpty)
+                |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} -> %A{kvp.Value}")
+                |> List.ofSeq}
+   Values = %A{this.Values
+               |> Map.filter (fun _ -> not << System.String.IsNullOrEmpty)
+               |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} = {kvp.Value}")
+               |> List.ofSeq} }}"""
 
 [<RequireQualifiedAccess>]
 module Instance =
@@ -73,14 +89,22 @@ module Instance =
         monad.plus {
             let! newValues =
                 Map.tryUpdate name value instance.Values
-                |> Result.ofOption $"Could not find value $A{name} in instance $A{instance}"
+                |> Result.ofOption $"Could not find value %A{name} in instance %A{instance}"
 
             { instance with Values = newValues }
         }
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Scope =
     { Components: Map<Identifier, Component>
       Instances: Map<Identifier, Instance> }
+    member this.StructuredFormatDisplay =
+        $"""Scope
+{{ Components = %A{this.Components
+                   |> Map.keys
+                   |> Seq.map (fun i -> i.Value)
+                   |> List.ofSeq}
+   Instances = %A{this.Instances} }}"""
 
 [<RequireQualifiedAccess>]
 module Scope =
@@ -131,3 +155,4 @@ module Scope =
 
             { scope with Instances = newInstances }
         }
+        |> Result.mapError (fun e -> $"Error in %A{connection}: %s{e}")
