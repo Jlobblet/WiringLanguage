@@ -16,7 +16,10 @@ type ConnectionPin =
         -- spaces
         -- +.p<Identifier>
         -|> fun n p -> { Name = n; Pin = p }
-    override this.ToString() = $"%s{this.Name.Value}.%s{this.Pin.Value}"
+
+    override this.ToString() =
+        $"%s{this.Name.Value}.%s{this.Pin.Value}"
+
     member this.StructuredFormatDisplay = this.ToString()
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
@@ -35,5 +38,8 @@ type Connection =
         -- ';'
         -|> fun s t -> { Source = s; Target = t }
         <?> "connection declaration"
-    override this.ToString() = $"Connection %A{this.Source} -> %A{this.Target};"
+
+    override this.ToString() =
+        $"Connection %A{this.Source} -> %A{this.Target};"
+
     member this.StructuredFormatDisplay = this.ToString()

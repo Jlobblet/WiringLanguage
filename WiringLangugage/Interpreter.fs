@@ -23,6 +23,9 @@ let rec InterpretString (string: string) =
     string.Trim()
     |> run (%p<Instruction> * qty.[1..])
     |> Result.ofParseResult
-    |> Result.bind (Array.ofSeq >> Array.fold folder (Result.Ok Scope.empty))
+    |> Result.bind (
+        Array.ofSeq
+        >> Array.fold folder (Result.Ok Scope.empty)
+    )
 
 and InterpretFile = File.ReadAllText >> InterpretString

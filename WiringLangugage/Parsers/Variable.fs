@@ -24,5 +24,8 @@ type Variable =
                         { ComponentIdentifier = ``type``
                           Name = n })
         <?> "variable declaration"
-    override this.ToString() = $"%A{this.ComponentIdentifier} %A{this.Name}"
+
+    override this.ToString() =
+        $"%A{this.ComponentIdentifier} %A{this.Name}"
+
     member this.StructuredFormatDisplay = this.ToString()
