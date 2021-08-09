@@ -17,7 +17,8 @@ let rec InterpretString (string: string) =
                     |> Result.map (Scope.union s)
                 | Variables vs -> Scope.tryCreateInstances vs s
                 | ComponentDefinition comp -> Scope.addComponent comp s |> Result.Ok
-                | ConnectionDefinition conn -> Scope.tryAddConnection conn s)
+                | ConnectionDefinition conn -> Scope.tryAddConnection conn s
+                | ValueSetter value -> Scope.trySetValue value s)
             scope
 
     string.Trim()

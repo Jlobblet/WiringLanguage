@@ -8,22 +8,23 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Utils\Utils.fs"/>
-        <Compile Include="Parsers\Identifier.fs"/>
-        <Compile Include="Parsers\Component.fs"/>
-        <Compile Include="Parsers\Connection.fs"/>
-        <Compile Include="Parsers\Variable.fs"/>
-        <Compile Include="Parsers\Import.fs"/>
-        <Compile Include="Parsers\Instruction.fs"/>
-        <Compile Include="Scope.fs"/>
-        <Compile Include="Interpreter.fs"/>
-        <Compile Include="Program.fs"/>
+        <Compile Include="Utils\Utils.fs" />
+        <Compile Include="Parsers\Identifier.fs" />
+        <Compile Include="Parsers\Component.fs" />
+        <Compile Include="Parsers\Connection.fs" />
+        <Compile Include="Parsers\Variable.fs" />
+        <Compile Include="Parsers\ValueSetter.fs" />
+        <Compile Include="Parsers\Import.fs" />
+        <Compile Include="Parsers\Instruction.fs" />
+        <Compile Include="Scope.fs" />
+        <Compile Include="Interpreter.fs" />
+        <Compile Include="Program.fs" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FParsec" Version="1.1.1"/>
-        <PackageReference Include="FParsec-Pipes" Version="1.1.1"/>
-        <PackageReference Include="FSharpPlus" Version="1.2.1"/>
+        <PackageReference Include="FParsec" Version="1.1.1" />
+        <PackageReference Include="FParsec-Pipes" Version="1.1.1" />
+        <PackageReference Include="FSharpPlus" Version="1.2.1" />
     </ItemGroup>
 
 </Project>

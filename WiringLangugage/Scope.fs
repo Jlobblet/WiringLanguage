@@ -1,6 +1,7 @@
 module WiringLangugage.Scope
 
 open FSharpPlus
+open WiringLangugage.Parsers.ValueSetter
 open WiringLangugage.Utils
 open WiringLangugage.Parsers.Component
 open WiringLangugage.Parsers.Connection
@@ -12,7 +13,7 @@ type Instance =
     { Component: Component
       Inputs: Map<Identifier, Set<ConnectionPin>>
       Outputs: Map<Identifier, Set<ConnectionPin>>
-      Values: Map<Identifier, string> }
+      Values: Map<Identifier, string Option> }
     member this.StructuredFormatDisplay =
         $"""Instance
 {{ Component = %s{this.Component.Identifier.Value}
@@ -25,8 +26,7 @@ type Instance =
                 |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} -> %A{kvp.Value}")
                 |> List.ofSeq}
    Values = %A{this.Values
-               |> Map.filter (fun _ -> not << System.String.IsNullOrEmpty)
-               |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} = {kvp.Value}")
+               |> Seq.choose (fun kvp -> kvp.Value |> Option.map (fun v -> $"%s{kvp.Key.Value} = {v}"))
                |> List.ofSeq} }}"""
 
 [<RequireQualifiedAccess>]
@@ -37,7 +37,7 @@ module Instance =
         { Component = ``component``
           Inputs = ``component``.Inputs |> initialiseMap Set.empty
           Outputs = ``component``.Outputs |> initialiseMap Set.empty
-          Values = ``component``.Values |> initialiseMap "" }
+          Values = ``component``.Values |> initialiseMap None }
 
     let addInput name connectionPin instance =
         let newConnections =
@@ -85,7 +85,7 @@ module Instance =
         { instance with
               Values = Map.add name value instance.Values }
 
-    let trySetValues name value instance =
+    let trySetValue name value instance =
         monad.plus {
             let! newValues =
                 Map.tryUpdate name value instance.Values
@@ -119,6 +119,15 @@ module Scope =
     let tryFindInstance name scope =
         Map.tryFind name scope.Instances
         |> Result.ofOption $"Could not find instance %A{name} in scope"
+        
+    let tryUpdateInstance name newInstance scope =
+        monad.plus {
+            let! newInstances =
+                Map.tryUpdate name newInstance scope.Instances
+                |> Result.ofOption $"Could not find instance %A{name} in scope"
+                
+            return { scope with Instances = newInstances }
+        }
 
     let addComponent (comp: Component) scope =
         { scope with
@@ -156,3 +165,10 @@ module Scope =
             { scope with Instances = newInstances }
         }
         |> Result.mapError (fun e -> $"Error in %A{connection}: %s{e}")
+        
+    let trySetValue (value: ValueSetter) scope =
+        monad.plus {
+            let! instance = tryFindInstance value.Name scope
+            let! newInstance = Instance.trySetValue value.ValueName (Some value.Value) instance
+            return! tryUpdateInstance value.Name newInstance scope
+        }
