@@ -4,6 +4,7 @@ open FParsec
 open FParsec.Pipes
 open WiringLangugage.Parsers.Identifier
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type ComponentField =
     | Input of input: Identifier
@@ -17,7 +18,13 @@ type ComponentField =
         -- spaces
         -- ';'
         -|> id
+    override this.ToString() =
+        match this with
+        | Input i -> $"input %s{i.Value};"
+        | Output o -> $"output %s{o.Value};"
+        | Value v -> $"value %s{v.Value}"
 
+[<StructuredFormatDisplay("StructuredFormatDisplay")>]
 type Component =
     { Name: Identifier
       Identifier: Identifier
@@ -69,3 +76,14 @@ type Component =
                   Inputs = inputs
                   Outputs = outputs
                   Values = values }
+        <?> "component definition"
+    override this.ToString() =
+        seq {
+            yield $"component %A{this.Name} : %A{this.Identifier} {{"
+            let makeField name = Seq.map (fun i -> $"    %A{i}")
+            yield! this.Inputs |> makeField "input"
+            yield! this.Outputs |> makeField "output"
+            yield! this.Values |> makeField "value"
+            yield "}"
+        } |> String.concat "\n"
+    member this.StructuredFormatDisplay = this.ToString()

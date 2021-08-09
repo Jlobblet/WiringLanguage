@@ -3,12 +3,11 @@ module WiringLangugage.Interpreter
 open System.IO
 open FParsec
 open FParsec.Pipes
-open FSharpPlus.Operators
 open WiringLangugage.Instruction
 open WiringLangugage.Scope
 open WiringLangugage.Utils
 
-let rec InterpretString string =
+let rec InterpretString (string: string) =
     let folder scope instruction =
         Result.bind
             (fun s ->
@@ -21,8 +20,8 @@ let rec InterpretString string =
                 | ConnectionDefinition conn -> Scope.tryAddConnection conn s)
             scope
 
-    string
-    |> run (%p<Instruction> * qty.[0..])
+    string.Trim()
+    |> run (%p<Instruction> * qty.[1..])
     |> Result.ofParseResult
     |> Result.bind (Array.ofSeq >> Array.fold folder (Result.Ok Scope.empty))
 

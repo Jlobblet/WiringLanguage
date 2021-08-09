@@ -4,6 +4,7 @@ open FParsec
 open FParsec.Pipes
 open WiringLangugage.Parsers.Identifier
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type Variable =
     { ComponentIdentifier: Identifier
@@ -22,3 +23,6 @@ type Variable =
                     (fun n ->
                         { ComponentIdentifier = ``type``
                           Name = n })
+        <?> "variable declaration"
+    override this.ToString() = $"%A{this.ComponentIdentifier} %A{this.Name}"
+    member this.StructuredFormatDisplay = this.ToString()

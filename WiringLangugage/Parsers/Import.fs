@@ -4,6 +4,7 @@ open System.IO
 open FParsec
 open FParsec.Pipes
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type Import =
     { Filepath: string }
@@ -14,4 +15,7 @@ type Import =
         -- +.regexL "<.+>" "Import filepath"
         -- spaces
         -- ';'
-        -|> fun fp -> { Filepath = Path.GetFullPath (fp.[1..^1]) }
+        -|> fun fp -> { Filepath = Path.GetFullPath fp.[1..^1] }
+        <?> "import statement"
+    override this.ToString() = $"#import <%s{this.Filepath}>;"
+    member this.StructuredFormatDisplay = this.ToString()

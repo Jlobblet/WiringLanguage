@@ -14,10 +14,9 @@ type Instruction =
     | ConnectionDefinition of Connection
     static member DefaultParser: Parser<Instruction, unit> =
         %% spaces
-        -- +.([ Import.DefaultParser |>> Import
-                Component.DefaultParser |>> ComponentDefinition
-                Variable.DefaultParser |>> Variables
-                Connection.DefaultParser |>> ConnectionDefinition ]
-                |> List.map attempt)
+        -- +.[ attempt Import.DefaultParser |>> Import
+               attempt Component.DefaultParser |>> ComponentDefinition
+               attempt Connection.DefaultParser |>> ConnectionDefinition
+               Variable.DefaultParser |>> Variables ]
         -- spaces
         -|> id

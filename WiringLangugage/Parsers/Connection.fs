@@ -4,6 +4,7 @@ open FParsec
 open FParsec.Pipes
 open WiringLangugage.Parsers.Identifier
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type ConnectionPin =
     { Name: Identifier
@@ -15,7 +16,10 @@ type ConnectionPin =
         -- spaces
         -- +.p<Identifier>
         -|> fun n p -> { Name = n; Pin = p }
+    override this.ToString() = $"%s{this.Name.Value}.%s{this.Pin.Value}"
+    member this.StructuredFormatDisplay = this.ToString()
 
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type Connection =
     { Source: ConnectionPin
@@ -30,3 +34,6 @@ type Connection =
         -- spaces
         -- ';'
         -|> fun s t -> { Source = s; Target = t }
+        <?> "connection declaration"
+    override this.ToString() = $"Connection %A{this.Source} -> %A{this.Target};"
+    member this.StructuredFormatDisplay = this.ToString()
