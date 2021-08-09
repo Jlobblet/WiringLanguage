@@ -24,7 +24,7 @@ type ComponentField =
         | Output o -> $"output %s{o.Value};"
         | Value v -> $"value %s{v.Value}"
 
-[<StructuredFormatDisplay("StructuredFormatDisplay")>]
+[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Component =
     { Name: Identifier
       Identifier: Identifier
