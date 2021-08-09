@@ -26,7 +26,10 @@ type Instance =
                 |> Seq.map (fun kvp -> $"%s{kvp.Key.Value} -> %A{kvp.Value}")
                 |> List.ofSeq}
    Values = %A{this.Values
-               |> Seq.choose (fun kvp -> kvp.Value |> Option.map (fun v -> $"%s{kvp.Key.Value} = {v}"))
+               |> Seq.choose
+                   (fun kvp ->
+                       kvp.Value
+                       |> Option.map (fun v -> $"%s{kvp.Key.Value} = {v}"))
                |> List.ofSeq} }}"""
 
 [<RequireQualifiedAccess>]
@@ -119,13 +122,13 @@ module Scope =
     let tryFindInstance name scope =
         Map.tryFind name scope.Instances
         |> Result.ofOption $"Could not find instance %A{name} in scope"
-        
+
     let tryUpdateInstance name newInstance scope =
         monad.plus {
             let! newInstances =
                 Map.tryUpdate name newInstance scope.Instances
                 |> Result.ofOption $"Could not find instance %A{name} in scope"
-                
+
             return { scope with Instances = newInstances }
         }
 
@@ -165,7 +168,7 @@ module Scope =
             { scope with Instances = newInstances }
         }
         |> Result.mapError (fun e -> $"Error in %A{connection}: %s{e}")
-        
+
     let trySetValue (value: ValueSetter) scope =
         monad.plus {
             let! instance = tryFindInstance value.Name scope
