@@ -3,6 +3,7 @@ module WiringLanguage.Parsers.ValueSetter
 open FParsec
 open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
+open WiringLanguage.Parsers.Strings
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
@@ -22,11 +23,11 @@ type ValueSetter =
         -- spaces
         -- '='
         -- spaces
-        -- +.regex ".+;"
+        -- +. EscapedStringSemicolon()
         -|> fun name valueName value ->
                 { Name = name
                   ValueName = valueName
-                  Value = value.[..^1] }
+                  Value = value }
         <?> "value setter"
 
     override this.ToString() =

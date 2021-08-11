@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <Compile Include="Utils\Utils.fs" />
+        <Compile Include="Parsers\Strings.fs" />
         <Compile Include="Parsers\Identifier.fs" />
         <Compile Include="Parsers\Component.fs" />
         <Compile Include="Parsers\Connection.fs" />
