@@ -1,4 +1,4 @@
-module WiringLangugage.Parsers.Import
+module WiringLanguage.Parsers.Import
 
 open System.IO
 open FParsec

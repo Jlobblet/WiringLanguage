@@ -1,4 +1,4 @@
-module WiringLangugage.Utils
+module WiringLanguage.Utils
 
 open FParsec
 

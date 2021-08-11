@@ -1,8 +1,8 @@
-module WiringLangugage.Parsers.ValueSetter
+module WiringLanguage.Parsers.ValueSetter
 
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Parsers.Identifier
+open WiringLanguage.Parsers.Identifier
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]

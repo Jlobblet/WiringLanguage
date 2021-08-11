@@ -1,12 +1,12 @@
-module WiringLangugage.Instruction
+module WiringLanguage.Instruction
 
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Parsers.Import
-open WiringLangugage.Parsers.ValueSetter
-open WiringLangugage.Parsers.Variable
-open WiringLangugage.Parsers.Component
-open WiringLangugage.Parsers.Connection
+open WiringLanguage.Parsers.Import
+open WiringLanguage.Parsers.ValueSetter
+open WiringLanguage.Parsers.Variable
+open WiringLanguage.Parsers.Component
+open WiringLanguage.Parsers.Connection
 
 type Instruction =
     | Import of Import

@@ -1,11 +1,11 @@
-module WiringLangugage.Interpreter
+module WiringLanguage.Interpreter
 
 open System.IO
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Instruction
-open WiringLangugage.Scope
-open WiringLangugage.Utils
+open WiringLanguage.Instruction
+open WiringLanguage.Scope
+open WiringLanguage.Utils
 
 let rec InterpretString (string: string) =
     let folder scope instruction =

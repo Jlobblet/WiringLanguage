@@ -1,8 +1,8 @@
-module WiringLangugage.Parsers.Connection
+module WiringLanguage.Parsers.Connection
 
 open FParsec
 open FParsec.Pipes
-open WiringLangugage.Parsers.Identifier
+open WiringLanguage.Parsers.Identifier
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]

@@ -1,12 +1,12 @@
-module WiringLangugage.Scope
+module WiringLanguage.Scope
 
 open FSharpPlus
-open WiringLangugage.Parsers.ValueSetter
-open WiringLangugage.Utils
-open WiringLangugage.Parsers.Component
-open WiringLangugage.Parsers.Connection
-open WiringLangugage.Parsers.Identifier
-open WiringLangugage.Parsers.Variable
+open WiringLanguage.Parsers.ValueSetter
+open WiringLanguage.Utils
+open WiringLanguage.Parsers.Component
+open WiringLanguage.Parsers.Connection
+open WiringLanguage.Parsers.Identifier
+open WiringLanguage.Parsers.Variable
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Instance =

@@ -1,4 +1,4 @@
-module WiringLangugage.Parsers.Identifier
+module WiringLanguage.Parsers.Identifier
 
 open FParsec
 
