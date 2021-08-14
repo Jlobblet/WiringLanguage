@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WiringLanguage", "WiringLanguage\WiringLanguage.fsproj", "{7A805E36-70C1-47FB-A62A-A4904D95FAD7}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WiringLanguage.StandardLibrary", "WiringLanguage.StandardLibrary\WiringLanguage.StandardLibrary.fsproj", "{6431CF83-B310-453E-B688-8730BF32DDFA}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "WiringLanguage.ItemAssembly", "WiringLanguage.ItemAssembly\WiringLanguage.ItemAssembly.fsproj", "{EF489FBE-9558-4A25-9F6C-9EC95280F01D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A805E36-70C1-47FB-A62A-A4904D95FAD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A805E36-70C1-47FB-A62A-A4904D95FAD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A805E36-70C1-47FB-A62A-A4904D95FAD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A805E36-70C1-47FB-A62A-A4904D95FAD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6431CF83-B310-453E-B688-8730BF32DDFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6431CF83-B310-453E-B688-8730BF32DDFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6431CF83-B310-453E-B688-8730BF32DDFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6431CF83-B310-453E-B688-8730BF32DDFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF489FBE-9558-4A25-9F6C-9EC95280F01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF489FBE-9558-4A25-9F6C-9EC95280F01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF489FBE-9558-4A25-9F6C-9EC95280F01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF489FBE-9558-4A25-9F6C-9EC95280F01D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

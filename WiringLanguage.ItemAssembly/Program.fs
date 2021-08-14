@@ -6,7 +6,7 @@ open WiringLanguage.Interpreter
 [<EntryPoint>]
 let main argv =
     """
-    #import </home/jlb/Documents/Barotrauma/WiringLangugage/WiringLanguage.StandardLibrary/bin/Debug/net5.0/standard library.wl>;
+    #import <%HOME%/Documents/Barotrauma/WiringLangugage/WiringLanguage.StandardLibrary/bin/Debug/net5.0/standard library.wl>;
     Memory m1, m2, m_out;
     m1.Value = 600;
     m2.Value = 21;
