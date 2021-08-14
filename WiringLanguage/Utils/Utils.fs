@@ -27,3 +27,10 @@ module Map =
         match Map.containsKey key map with
         | false -> None
         | true -> Map.add key value map |> Some
+        
+    let tryPop key map =
+        match Map.containsKey key map with
+        | false -> None
+        | true ->
+            let value = map.[key]
+            (Map.remove key map, value)|> Some

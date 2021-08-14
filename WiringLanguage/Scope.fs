@@ -100,24 +100,28 @@ module Instance =
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Scope =
     { Components: Map<Identifier, Component>
-      Instances: Map<Identifier, Instance> }
+      Instances: Map<Identifier, Instance>
+      AnonymousInstances: Instance list }
     member this.StructuredFormatDisplay =
         $"""Scope
 {{ Components = %A{this.Components
                    |> Map.keys
                    |> Seq.map (fun i -> i.Value)
                    |> List.ofSeq}
-   Instances = %A{this.Instances} }}"""
+   Instances = %A{this.Instances}
+   AnonymousInstances = %A{this.AnonymousInstances} }}"""
 
 [<RequireQualifiedAccess>]
 module Scope =
     let empty =
         { Components = Map.empty
-          Instances = Map.empty }
+          Instances = Map.empty
+          AnonymousInstances = List.empty }
 
     let union this other =
         { Components = Map.union other.Components this.Components
-          Instances = Map.union other.Instances this.Instances }
+          Instances = Map.union other.Instances this.Instances
+          AnonymousInstances = List.append other.AnonymousInstances this.AnonymousInstances }
 
     let tryFindInstance name scope =
         Map.tryFind name scope.Instances
@@ -136,13 +140,25 @@ module Scope =
         { scope with
               Components = Map.add comp.Name comp scope.Components }
 
+    let addAnonymousInstance instance scope =
+        { scope with
+              AnonymousInstances = instance :: scope.AnonymousInstances }
+        
+    let anonymiseInstance identifier scope =
+        match Map.tryPop identifier scope.Instances with
+        | None -> scope
+        | Some(newInstances, instance) -> { scope with Instances = newInstances; AnonymousInstances = instance :: scope.AnonymousInstances }
+
     let tryCreateInstance variable scope =
         Map.tryFind variable.ComponentIdentifier scope.Components
         |> Result.ofOption $"Could not find component %A{variable.ComponentIdentifier} in scope"
         |> Result.map
             (fun comp ->
-                { scope with
-                      Instances = Map.add variable.Name (Instance.create comp) scope.Instances })
+                match variable.Name with
+                | Identifier "_" -> addAnonymousInstance (Instance.create comp) scope
+                | name ->
+                    { scope with
+                          Instances = Map.add name (Instance.create comp) scope.Instances })
 
     let tryCreateInstances variables scope =
         let folder acc var =
