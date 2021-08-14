@@ -1,5 +1,6 @@
 module WiringLanguage.Interpreter
 
+open System
 open System.IO
 open FParsec
 open FParsec.Pipes
@@ -26,4 +27,4 @@ let rec InterpretString (string: string) =
     |> Result.ofParseResult
     |> Result.bind (Seq.fold folder (Result.Ok Scope.empty))
 
-and InterpretFile = File.ReadAllText >> InterpretString
+and InterpretFile = Environment.ExpandEnvironmentVariables >> File.ReadAllText >> InterpretString
