@@ -1,5 +1,6 @@
 module WiringLanguage.Parsers.Import
 
+open System
 open System.IO
 open FParsec
 open FParsec.Pipes
@@ -15,7 +16,7 @@ type Import =
         -- +.regexL "<.+>" "Import filepath"
         -- spaces
         -- ';'
-        -|> fun fp -> { Filepath = Path.GetFullPath fp.[1..^1] }
+        -|> fun fp -> { Filepath = fp.[1..^1] |> Environment.ExpandEnvironmentVariables |> Path.GetFullPath  }
         <?> "import statement"
     override this.ToString() = $"#import <%s{this.Filepath}>;"
     member this.StructuredFormatDisplay = this.ToString()
