@@ -88,10 +88,9 @@ module Scope =
 
             // The keys are guaranteed to exist from tryFindInstance, so this won't add new keys to the maps
             let newInstances =
-                scope
-                    .Instances
-                    .Add(connection.Source.Name, newSource)
-                    .Add(connection.Target.Name, newTarget)
+                scope.Instances
+                |> Map.add connection.Source.Name newSource
+                |> Map.add connection.Target.Name newTarget
 
             { scope with Instances = newInstances }
         }
