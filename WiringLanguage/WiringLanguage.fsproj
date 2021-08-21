@@ -19,6 +19,7 @@
         <Compile Include="Parsers\Import.fs" />
         <Compile Include="Parsers\Instruction.fs" />
         <Compile Include="Instance.fs" />
+        <Compile Include="Wire.fs" />
         <Compile Include="Scope.fs" />
         <Compile Include="Interpreter.fs" />
     </ItemGroup>

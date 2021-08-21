@@ -2,18 +2,20 @@ module WiringLanguage.Scope
 
 open FSharpPlus
 open WiringLanguage.Parsers.ValueSetter
-open WiringLanguage.Utils
 open WiringLanguage.Parsers.Component
 open WiringLanguage.Parsers.Connection
 open WiringLanguage.Parsers.Identifier
 open WiringLanguage.Parsers.Variable
 open WiringLanguage.Instance
+open WiringLanguage.Utils
+open WiringLanguage.Wire
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Scope =
     { Components: Map<Identifier, Component>
       Instances: Map<Identifier, Instance>
-      AnonymousInstances: Instance list }
+      AnonymousInstances: Instance list
+      Wires: Wire list }
     member this.StructuredFormatDisplay =
         $"""Scope
 {{ Components = %A{this.Components
@@ -28,12 +30,14 @@ module Scope =
     let empty =
         { Components = Map.empty
           Instances = Map.empty
-          AnonymousInstances = List.empty }
+          AnonymousInstances = List.empty
+          Wires = List.empty }
 
     let union this other =
         { Components = Map.union other.Components this.Components
           Instances = Map.union other.Instances this.Instances
-          AnonymousInstances = List.append other.AnonymousInstances this.AnonymousInstances }
+          AnonymousInstances = List.append other.AnonymousInstances this.AnonymousInstances
+          Wires = List.append other.Wires this.Wires }
 
     let tryFindInstance name scope =
         Map.tryFind name scope.Instances
@@ -78,21 +82,27 @@ module Scope =
 
         Array.fold folder (Result.Ok scope) variables
 
-    let tryAddConnection connection scope =
+    let tryAddWire connection scope =
         monad.plus {
             let! source = tryFindInstance connection.Source.Name scope
-            let! newSource = Instance.tryAddOutput connection.Source.Pin connection.Target source
+            do!
+               match Set.contains connection.Source.Pin source.Outputs with
+               | false -> Error $"Could not find output pin %A{connection.Source.Pin} in %A{source}"
+               | _ -> Ok ()
 
             let! target = tryFindInstance connection.Target.Name scope
-            let! newTarget = Instance.tryAddInput connection.Target.Pin connection.Source target
+            do!
+               match Set.contains connection.Target.Pin target.Inputs with
+               | false -> Error $"Could not find input pin %A{connection.Target.Pin} in %A{target}"
+               | _ -> Ok ()
+            
+            let wire =
+                { SourceInstance = source
+                  SourcePin = connection.Source.Pin
+                  TargetInstance = target
+                  TargetPin = connection.Target.Pin }
 
-            // The keys are guaranteed to exist from tryFindInstance, so this won't add new keys to the maps
-            let newInstances =
-                scope.Instances
-                |> Map.add connection.Source.Name newSource
-                |> Map.add connection.Target.Name newTarget
-
-            { scope with Instances = newInstances }
+            { scope with Wires = wire :: scope.Wires }
         }
         |> Result.mapError (fun e -> $"Error in %A{connection}: %s{e}")
 
