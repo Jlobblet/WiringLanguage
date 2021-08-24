@@ -4,6 +4,11 @@ open FParsec
 open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
 
+[<Struct; NoComparison>]
+type ConnectionDirection =
+    | Forwards
+    | Backwards
+
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type ConnectionPin =
@@ -31,12 +36,15 @@ type Connection =
         %%spaces
         -- +.p<ConnectionPin>
         -- spaces
-        -- "->"
+        -- +. [stringReturn "->" Forwards; stringReturn "<-" Backwards]
         -- spaces
         -- +.p<ConnectionPin>
         -- spaces
         -- ';'
-        -|> fun s t -> { Source = s; Target = t }
+        -|> (fun s d t ->
+            match d with
+            | Forwards -> { Source = s; Target = t }
+            | Backwards -> { Source = t; Target = s })
         <?> "connection declaration"
 
     override this.ToString() =
