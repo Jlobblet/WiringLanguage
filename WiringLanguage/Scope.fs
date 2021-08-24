@@ -23,7 +23,8 @@ type Scope =
                    |> Seq.map (fun i -> i.Value)
                    |> List.ofSeq}
    Instances = %A{this.Instances}
-   AnonymousInstances = %A{this.AnonymousInstances} }}"""
+   AnonymousInstances = %A{this.AnonymousInstances}
+   Wires = %A{this.Wires} }}"""
 
 [<RequireQualifiedAccess>]
 module Scope =
