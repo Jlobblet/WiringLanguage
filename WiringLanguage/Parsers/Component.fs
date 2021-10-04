@@ -1,11 +1,11 @@
 module WiringLanguage.Parsers.Component
 
+open FSharpPlus
 open FParsec
 open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
 
-[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
-[<Struct>]
+[<Struct; StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type ComponentField =
     | Input of input: Identifier
     | Output of output: Identifier
@@ -18,6 +18,8 @@ type ComponentField =
         -- spaces
         -- ';'
         -|> id
+        <?> "component field"
+
     override this.ToString() =
         match this with
         | Input i -> $"input %s{i.Value};"
@@ -49,7 +51,7 @@ type Component =
                 let fields = Array.ofSeq fields
                 let inputs =
                     fields
-                    |> Array.choose
+                    |> choose
                         (function
                         | Input i -> Some i
                         | _ -> None)
@@ -57,7 +59,7 @@ type Component =
 
                 let outputs =
                     fields
-                    |> Array.choose
+                    |> choose
                         (function
                         | Output o -> Some o
                         | _ -> None)
@@ -65,7 +67,7 @@ type Component =
                     
                 let values =
                     fields
-                    |> Array.choose
+                    |> choose
                         (function
                         | Value v -> Some v
                         | _ -> None)
@@ -77,10 +79,11 @@ type Component =
                   Outputs = outputs
                   Values = values }
         <?> "component definition"
+
     override this.ToString() =
         seq {
             yield $"component %A{this.Name} : %A{this.Identifier} {{"
-            let makeField name = Seq.map (fun i -> $"    %A{i}")
+            let makeField name = map (fun i -> $"    %A{i}")
             yield! this.Inputs |> makeField "input"
             yield! this.Outputs |> makeField "output"
             yield! this.Values |> makeField "value"

@@ -23,3 +23,4 @@ type Instruction =
                Variable.DefaultParser |>> Variables ]
         -- spaces
         -|> id
+        <?> "instruction"

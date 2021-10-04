@@ -5,8 +5,7 @@ open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
 open WiringLanguage.Parsers.Strings
 
-[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
-[<Struct>]
+[<Struct; StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type ValueSetter =
     { Name: Identifier
       ValueName: Identifier

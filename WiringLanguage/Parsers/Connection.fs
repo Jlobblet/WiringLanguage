@@ -9,8 +9,7 @@ type ConnectionDirection =
     | Forwards
     | Backwards
 
-[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
-[<Struct>]
+[<Struct; StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type ConnectionPin =
     { Name: Identifier
       Pin: Identifier }
@@ -22,14 +21,14 @@ type ConnectionPin =
         -- spaces
         -- +.p<Identifier>
         -|> fun n p -> { Name = n; Pin = p }
+        <?> "connection pin"
 
     override this.ToString() =
         $"%s{this.Name.Value}.%s{this.Pin.Value}"
 
     member this.StructuredFormatDisplay = this.ToString()
 
-[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
-[<Struct>]
+[<Struct; StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Connection =
     { Source: ConnectionPin
       Target: ConnectionPin }

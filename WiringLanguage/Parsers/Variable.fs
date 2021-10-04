@@ -1,12 +1,12 @@
 module WiringLanguage.Parsers.Variable
 
+open FSharpPlus
 open FParsec
 open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
 open WiringLanguage.Parsers.VariableType
 
-[<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
-[<Struct>]
+[<Struct; StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 type Variable =
     { ComponentIdentifier: Identifier
       VariableType: VariableType
@@ -24,7 +24,7 @@ type Variable =
         -|> fun variableType identifier names ->
                 names
                 |> Array.ofSeq
-                |> Array.map
+                |> map
                     (fun n ->
                         { ComponentIdentifier = identifier
                           VariableType = variableType

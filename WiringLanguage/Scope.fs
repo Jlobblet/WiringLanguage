@@ -20,7 +20,7 @@ type Scope =
         $"""Scope
 {{ Components = %A{this.Components
                    |> Map.keys
-                   |> Seq.map (fun i -> i.Value)
+                   |> map (fun i -> i.Value)
                    |> List.ofSeq}
    Instances = %A{this.Instances}
    AnonymousInstances = %A{this.AnonymousInstances}
@@ -60,50 +60,61 @@ module Scope =
     let addAnonymousInstance instance scope =
         { scope with
               AnonymousInstances = instance :: scope.AnonymousInstances }
-        
+
     let anonymiseInstance identifier scope =
         match Map.tryPop identifier scope.Instances with
         | None -> scope
-        | Some(newInstances, instance) -> { scope with Instances = newInstances; AnonymousInstances = instance :: scope.AnonymousInstances }
+        | Some (newInstances, instance) ->
+            { scope with
+                  Instances = newInstances
+                  AnonymousInstances = instance :: scope.AnonymousInstances }
 
     let tryCreateInstance variable scope =
         Map.tryFind variable.ComponentIdentifier scope.Components
         |> Result.ofOption $"Could not find component %A{variable.ComponentIdentifier} in scope"
-        |> Result.map
+        |> map
             (fun comp ->
                 match variable.Name with
                 | Identifier "_" -> addAnonymousInstance (Instance.create comp) scope
                 | name ->
                     { scope with
-                          Instances = Map.add name (Instance.create comp) scope.Instances })
+                          Instances =
+                              Map.add
+                                  name
+                                  (Instance.create comp
+                                   |> Instance.setComponentType variable.VariableType)
+                                  scope.Instances })
 
     let tryCreateInstances variables scope =
         let folder acc var =
-            acc |> Result.bind (tryCreateInstance var)
+            acc |> bind (tryCreateInstance var)
 
         Array.fold folder (Result.Ok scope) variables
 
     let tryAddWire connection scope =
         monad.plus {
             let! source = tryFindInstance connection.Source.Name scope
+
             do!
-               match Set.contains connection.Source.Pin source.Outputs with
-               | false -> Error $"Could not find output pin %A{connection.Source.Pin} in %A{source}"
-               | _ -> Ok ()
+                match Set.contains connection.Source.Pin source.Outputs with
+                | false -> Error $"Could not find output pin %A{connection.Source.Pin} in %A{source}"
+                | _ -> Ok()
 
             let! target = tryFindInstance connection.Target.Name scope
+
             do!
-               match Set.contains connection.Target.Pin target.Inputs with
-               | false -> Error $"Could not find input pin %A{connection.Target.Pin} in %A{target}"
-               | _ -> Ok ()
-            
+                match Set.contains connection.Target.Pin target.Inputs with
+                | false -> Error $"Could not find input pin %A{connection.Target.Pin} in %A{target}"
+                | _ -> Ok()
+
             let wire =
                 { SourceInstance = source
                   SourcePin = connection.Source.Pin
                   TargetInstance = target
                   TargetPin = connection.Target.Pin }
 
-            { scope with Wires = wire :: scope.Wires }
+            { scope with
+                  Wires = wire :: scope.Wires }
         }
         |> Result.mapError (fun e -> $"Error in %A{connection}: %s{e}")
 

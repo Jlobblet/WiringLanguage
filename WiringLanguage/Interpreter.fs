@@ -1,6 +1,7 @@
 module WiringLanguage.Interpreter
 
 open System.IO
+open FSharpPlus
 open FParsec
 open FParsec.Pipes
 open WiringLanguage.Instruction
@@ -9,12 +10,12 @@ open WiringLanguage.Utils
 
 let rec InterpretString (string: string) =
     let folder scope instruction =
-        Result.bind
+        bind
             (fun s ->
                 match instruction with
                 | Import i ->
                     InterpretFile i.Filepath
-                    |> Result.map (Scope.union s)
+                    |> map (Scope.union s)
                 | Variables vs -> Scope.tryCreateInstances vs s
                 | ComponentDefinition comp -> Scope.addComponent comp s |> Result.Ok
                 | ConnectionDefinition conn -> Scope.tryAddWire conn s
@@ -24,6 +25,6 @@ let rec InterpretString (string: string) =
     string.Trim()
     |> run (%p<Instruction> * qty.[1..])
     |> Result.ofParseResult
-    |> Result.bind (Seq.fold folder (Result.Ok Scope.empty))
+    |> bind (fold folder (Result.Ok Scope.empty))
 
 and InterpretFile = File.ReadAllText >> InterpretString

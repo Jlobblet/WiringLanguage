@@ -17,10 +17,9 @@ type Component =
       Values: string [] }
 
 let tryGetValue (element: XElement) =
-    if String.IsNullOrEmpty element.Value then
-        None
-    else
-        Some element.Value
+    match String.IsNullOrWhiteSpace element.Value with
+    | true -> None
+    | false -> Some element.Value
 
 let tryGetAttributeValue (name: string) (element: XElement) =
     match element.Attribute name with
@@ -30,7 +29,7 @@ let tryGetAttributeValue (name: string) (element: XElement) =
 let tryGetName (language: XDocument) (xe: XElement) =
     tryGetAttributeValue "nameidentifier" xe
     |> Option.orElseWith (fun () -> tryGetAttributeValue "identifier" xe)
-    |> Option.bind
+    |> bind
         (fun i ->
             language.Root.Element $"entityname.%s{i.ToLowerInvariant()}"
             |> tryGetValue)
@@ -71,7 +70,7 @@ let tryGetValues (assembly: Assembly) (xElement: XElement) =
                 ||| BindingFlags.NonPublic
                 ||| BindingFlags.FlattenHierarchy
             )
-            |> Array.choose (
+            |> choose (
                 Option.protect
                     (fun propertyInfo ->
                         let hasSerialize =
@@ -102,13 +101,13 @@ let extractComponents assembly english (xElement: XElement) =
             // Get inputs from the connection panel
             let inputs =
                 connectionPanel.Elements "input"
-                |> Seq.choose (tryGetAttributeValue "name")
+                |> choose (tryGetAttributeValue "name")
                 |> Array.ofSeq
 
             // Get outputs from the connection panel
             let outputs =
                 connectionPanel.Elements "output"
-                |> Seq.choose (tryGetAttributeValue "name")
+                |> choose (tryGetAttributeValue "name")
                 |> Array.ofSeq
 
             // Reflection to find serializable things
@@ -132,7 +131,7 @@ let generateComponentDefinition ``component`` =
                 .Name
                 .Replace("component", "", StringComparison.OrdinalIgnoreCase)
                 .Replace("detector", "Detector", StringComparison.OrdinalIgnoreCase)
-            |> Seq.mapi
+            |> mapi
                 (function
                 | 0 -> Char.ToUpper
                 | _ -> id)
@@ -142,7 +141,7 @@ let generateComponentDefinition ``component`` =
         yield $"component %s{name} : %s{identifier} {{"
 
         let makeField name ns =
-            Array.map (fun n -> $"    %s{name} %s{n};") ns
+            map (fun n -> $"    %s{name} %s{n};") ns
 
         yield! makeField "input" ``component``.Inputs
         yield! makeField "output" ``component``.Outputs
@@ -167,25 +166,25 @@ let main argv =
         Path.Combine(settings.BarotraumaLocation, "Data", "ContentPackages", "Vanilla 0.9.xml")
         |> XDocument.Load
         |> fun d -> d.Root.Elements "Item"
-        |> Seq.choose (tryGetAttributeValue "file")
-        |> Seq.choose (tryGetItems settings.BarotraumaLocation)
+        |> choose (tryGetAttributeValue "file")
+        |> choose (tryGetItems settings.BarotraumaLocation)
         |> Seq.collect id
-        |> Seq.choose (extractComponents assembly english)
-        |> Seq.groupBy (fun c -> c.Name)
+        |> choose (extractComponents assembly english)
+        |> groupBy (fun c -> c.Name)
         |> Seq.collect
             (fun (_, cs) ->
                 match Seq.length cs with
                 | 1 -> cs
                 | _ ->
                     cs
-                    |> Seq.map
+                    |> map
                         (fun c ->
                             { c with
                                   Name =
                                       match c.Name.Equals(c.Identifier, StringComparison.OrdinalIgnoreCase) with
                                       | true -> c.Name
                                       | false -> $"%s{c.Name}_%s{c.Identifier}" }))
-        |> Seq.map generateComponentDefinition
+        |> map generateComponentDefinition
         |> String.concat "\n\n"
 
     File.WriteAllText("standard library.wl", components + "\n")
