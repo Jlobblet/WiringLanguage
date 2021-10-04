@@ -14,6 +14,7 @@
         <Compile Include="Parsers\Identifier.fs" />
         <Compile Include="Parsers\Component.fs" />
         <Compile Include="Parsers\Connection.fs" />
+        <Compile Include="Parsers\VariableType.fs" />
         <Compile Include="Parsers\Variable.fs" />
         <Compile Include="Parsers\ValueSetter.fs" />
         <Compile Include="Parsers\Import.fs" />

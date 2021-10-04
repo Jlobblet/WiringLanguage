@@ -3,25 +3,31 @@ module WiringLanguage.Parsers.Variable
 open FParsec
 open FParsec.Pipes
 open WiringLanguage.Parsers.Identifier
+open WiringLanguage.Parsers.VariableType
 
 [<StructuredFormatDisplay("{StructuredFormatDisplay}")>]
 [<Struct>]
 type Variable =
     { ComponentIdentifier: Identifier
+      VariableType: VariableType
       Name: Identifier }
     static member DefaultParser: Parser<_, unit> =
         let comma () = %% "," -- spaces -|> ()
 
-        %% +.p<Identifier>
+        %%spaces
+        -- +.p<VariableType>
+        -- spaces
+        -- +.p<Identifier>
         -- spaces1
         -- +.(qty.[1..] / comma () * p<Identifier>)
         -- ';'
-        -|> fun ``type`` names ->
+        -|> fun variableType identifier names ->
                 names
                 |> Array.ofSeq
                 |> Array.map
                     (fun n ->
-                        { ComponentIdentifier = ``type``
+                        { ComponentIdentifier = identifier
+                          VariableType = variableType
                           Name = n })
         <?> "variable declaration"
 
