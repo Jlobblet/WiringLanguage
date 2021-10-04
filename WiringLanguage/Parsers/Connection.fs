@@ -41,10 +41,10 @@ type Connection =
         -- +.p<ConnectionPin>
         -- spaces
         -- ';'
-        -|> (fun s d t ->
-            match d with
-            | Forwards -> { Source = s; Target = t }
-            | Backwards -> { Source = t; Target = s })
+        -|> (fun left direction right ->
+            match direction with
+            | Forwards -> { Source = left; Target = right }
+            | Backwards -> { Source = right; Target = left })
         <?> "connection declaration"
 
     override this.ToString() =
