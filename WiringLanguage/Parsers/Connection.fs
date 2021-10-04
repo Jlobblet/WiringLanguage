@@ -15,7 +15,8 @@ type ConnectionPin =
     { Name: Identifier
       Pin: Identifier }
     static member DefaultParser: Parser<_, unit> =
-        %% +.p<Identifier>
+        %%spaces
+        -- +.p<Identifier>
         -- spaces
         -- '.'
         -- spaces
