@@ -1,11 +1,7 @@
 module WiringLanguage.Utils
 
+open FSharpPlus
 open FParsec
-
-let ParserResultExpect result =
-    match result with
-    | ParserResult.Success (result, state, position) -> result
-    | Failure _ as f -> failwith $"%A{f}"
 
 [<RequireQualifiedAccess>]
 module Result =
@@ -34,3 +30,8 @@ module Map =
         | true ->
             let value = map.[key]
             (Map.remove key map, value)|> Some
+
+let ParserResultExpect parserResult =
+    parserResult
+    |> Result.ofParseResult
+    |> either (fun (a, _, _) -> a) (failwithf "%A")
